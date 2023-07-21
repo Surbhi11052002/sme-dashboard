@@ -2,46 +2,91 @@ const db = require("../db");
 
 exports.fetchData = async (req, res) => {
   try {
-    console.log(req.params.id);
     //grading count
+    const { id } = req.params;
     const gradingCountDaily = await db.query(
-      "select daily_count from grading where user_id =$1",
-      [req.params.id]
+      "SELECT g.grading_count_daily FROM grading g JOIN users u ON g.user_id = u.user_id WHERE u.user_id = $1 AND submission_date= CURRENT_DATE",
+      [id]
     );
-    const gradingCountWeekly = await db.query(
-      "select weekly_count from grading where user_id =$1",
-      [req.params.id]
+    //thinkchat
+    const thinkchatCountDaily = await db.query(
+      "SELECT t.tickets_solved FROM thinkchat t JOIN users u ON t.user_id = u.user_id WHERE u.user_id = $1 AND submission_date= CURRENT_DATE",
+      [id]
     );
-
-    //thinkChat
-    const ticketsSolvedDaily = await db.query(
-      "select daily from thinkchat where user_id =$1",
-      [req.params.id]
-    );
-    const ticketsSolvedWeekly = await db.query(
-      "select weekly from thinkchat where user_id =$1",
-      [req.params.id]
-    );
-
-    //thinkChat Satisfaction score
-    const satisfactionScoreCurrentWeek = await db.query(
-      "select satisfaction_score_current_week from thinkchat where user_id =$1",
-      [req.params.id]
-    );
-    const satisfactionScorePastWeek = await db.query(
-      "select satisfaction_score_past_week from thinkchat where user_id =$1",
-      [req.params.id]
+    //satisfaction score
+    const satisfactionScoreDaily = await db.query(
+      "SELECT (t.tickets_solved::float / NULLIF(t.tickets_handled, 0) * 100) AS satisfaction_score FROM thinkchat t JOIN users u ON t.user_id = u.user_id WHERE u.user_id = $1 AND submission_date= CURRENT_DATE",
+      [id]
     );
 
     res.status(200).json({
       status: "succes",
       data: {
         gradingCountDaily: gradingCountDaily.rows[0],
-        gradingCountWeekly: gradingCountWeekly.rows[0],
-        ticketsSolvedDaily: ticketsSolvedDaily.rows[0],
-        ticketsSolvedWeekly: ticketsSolvedWeekly.rows[0],
-        satisfactionScoreCurrentWeek: satisfactionScoreCurrentWeek.rows[0],
-        satisfactionScorePastWeek: satisfactionScorePastWeek.rows[0],
+        thinkchatCountDaily: thinkchatCountDaily.rows[0],
+        satisfactionScoreDaily: satisfactionScoreDaily.rows[0],
+      },
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+exports.fetchSpecificDateData = async (req, res) => {
+  try {
+    //grading count
+    const { id, start_date } = req.params;
+    const gradingCount = await db.query(
+      "SELECT g.grading_count_daily FROM grading g JOIN users u ON g.user_id = u.user_id WHERE u.user_id = $1 AND submission_date= $2",
+      [id, start_date]
+    );
+    //thinkchat
+    const thinkchatCount = await db.query(
+      "SELECT t.tickets_solved FROM thinkchat t JOIN users u ON t.user_id = u.user_id WHERE u.user_id = $1 AND submission_date= $2",
+      [id, start_date]
+    );
+    //satisfaction score
+    const satisfactionScore = await db.query(
+      "SELECT (t.tickets_solved::float / NULLIF(t.tickets_handled, 0) * 100) AS satisfaction_score FROM thinkchat t JOIN users u ON t.user_id = u.user_id WHERE u.user_id = $1 AND submission_date= $2",
+      [id, start_date]
+    );
+    res.status(200).json({
+      status: "succes",
+      data: {
+        gradingCount: gradingCount.rows[0],
+        thinkchatCount: thinkchatCount.rows[0],
+        satisfactionScore: satisfactionScore.rows[0],
+      },
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+exports.fetchTotalData = async (req, res) => {
+  try {
+    //grading count
+    const { id, start_date, end_date } = req.params;
+    const totalGradingCount = await db.query(
+      "SELECT SUM(g.grading_count_daily) AS total_grading_count FROM grading g JOIN users u ON g.user_id = u.user_id WHERE u.user_id = $1 AND g.submission_date BETWEEN $2 AND $3",
+      [id, start_date, end_date]
+    );
+    //thinkchat
+    const totalthinkchatCount = await db.query(
+      "SELECT SUM(t.tickets_solved) AS total_thinkchat_count FROM thinkchat t JOIN users u ON t.user_id = u.user_id WHERE u.user_id = $1 AND t.submission_date BETWEEN $2 AND $3",
+      [id, start_date, end_date]
+    );
+    //satisfaction score
+    const toatalsatisfactionScore = await db.query(
+      "SELECT (SUM(t.tickets_solved::float) / NULLIF(SUM(t.tickets_handled), 0) * 100) AS satisfaction_score FROM thinkchat t JOIN users u ON t.user_id = u.user_id WHERE u.user_id = $1 AND submission_date BETWEEN $2 AND $3",
+      [id, start_date, end_date]
+    );
+
+    res.status(200).json({
+      status: "succes",
+      data: {
+        totalGradingCount: totalGradingCount.rows[0],
+        totalthinkchatCount: totalthinkchatCount.rows[0],
+        toatalsatisfactionScore: toatalsatisfactionScore.rows[0],
       },
     });
   } catch (err) {
