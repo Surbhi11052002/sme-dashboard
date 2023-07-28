@@ -1,9 +1,20 @@
 const db = require("../db");
+const jwt = require("jsonwebtoken");
 
-exports.fetchData = async (req, res) => {
+exports.fetchData = async (req, res, next) => {
+  const token = req.header("token");
+  console.log(token);
+  if (!token) {
+    res
+      .status(401)
+      .send({ error: "Please authenticate user  valid credentials" });
+  }
+
   try {
+    const data = jwt.verify(token, process.env.SECRET);
+    //req.user = data.user;
     //grading count
-    const { id } = req.params;
+    const id = await data.id;
     const gradingCountDaily = await db.query(
       "SELECT g.grading_count_daily FROM grading g JOIN users u ON g.user_id = u.user_id WHERE u.user_id = $1 AND submission_date= CURRENT_DATE",
       [id]
@@ -27,8 +38,10 @@ exports.fetchData = async (req, res) => {
         satisfactionScoreDaily: satisfactionScoreDaily.rows[0],
       },
     });
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    res
+      .status(401)
+      .send({ error: "Please authenticate user with valid credentials" });
   }
 };
 
