@@ -11,7 +11,7 @@ require("./middlewares/passport-middleware");
 //initialize middlewares
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: CLIENT_URL, credentials: true }));
+app.use(cors());
 app.use(passport.initialize());
 
 //import routes

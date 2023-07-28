@@ -12,19 +12,48 @@ export default function LoginForm() {
   const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
 
-  const handleClick = () => {
-    navigate('/dashboard', { replace: true });
+  // const handleClick = () => {
+  //   navigate('/dashboard', { replace: true });
+  // };
+  const handleClick = async (e) => {
+    e.preventDefault();
+    const response = await fetch('http://localhost:8000/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: credentials.email,
+        password: credentials.password,
+      }),
+    });
+    const json = await response.json();
+    console.log(json);
+    if (json.success) {
+      localStorage.setItem('token', json.token);
+      // alert('LoggedIn successfully');
+      navigate('/dashboard');
+    } else {
+      alert('Invalid Credentials');
+    }
+  };
+
+  const onChange = (e) => {
+    setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
   return (
     <>
       <Stack spacing={3}>
-        <TextField name="email" label="Email address" />
+        <TextField name="email" label="Email address" value="email" onChange={onChange} />
 
         <TextField
           name="password"
           label="Password"
+          value="Password"
+          onChange={onChange}
           type={showPassword ? 'text' : 'password'}
           InputProps={{
             endAdornment: (
