@@ -8,7 +8,7 @@ import { bgBlur } from '../../../utils/cssStyles';
 import Iconify from '../../../components/iconify';
 //
 import AccountPopover from './AccountPopover';
-import BasicDatePicker from './Calendar';
+
 //
 
 // ----------------------------------------------------------------------
@@ -56,13 +56,7 @@ export default function Header({ onOpenNav }) {
           <Iconify icon="eva:menu-2-fill" />
         </IconButton>
 
-        {/* //<Searchbar /> */}
-        {/* <BasicDatePicker label="start" /> */}
-
         <Box sx={{ flexGrow: 1 }} />
-        {/* <Box>
-          <BasicDatePicker labletext="start" />
-        </Box> */}
 
         <Stack
           direction="row"

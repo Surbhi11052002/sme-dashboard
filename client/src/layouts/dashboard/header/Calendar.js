@@ -6,8 +6,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const demoContainerStyle = {
-  width: '200px',
-  height: '100px',
+  width: '170px',
+  height: '50px',
 };
 //
 export default function BasicDatePicker(props) {
@@ -15,9 +15,7 @@ export default function BasicDatePicker(props) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div style={demoContainerStyle}>
-        <DemoContainer components={['DatePicker']}>
-          <DatePicker label={labeltext} />
-        </DemoContainer>
+        <DatePicker label={labeltext} />
       </div>
     </LocalizationProvider>
   );
