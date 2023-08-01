@@ -26,7 +26,7 @@ exports.fetchData = async (req, res, next) => {
     );
     //satisfaction score
     const satisfactionScoreDaily = await db.query(
-      "SELECT (t.tickets_solved::float / NULLIF(t.tickets_handled, 0) * 100) AS satisfaction_score FROM thinkchat t JOIN users u ON t.user_id = u.user_id WHERE u.user_id = $1 AND submission_date= CURRENT_DATE",
+      "SELECT ROUND(t.tickets_solved::float / NULLIF(t.tickets_handled, 0) * 100) AS satisfaction_score FROM thinkchat t JOIN users u ON t.user_id = u.user_id WHERE u.user_id = $1 AND submission_date= CURRENT_DATE",
       [id]
     );
 
@@ -73,7 +73,7 @@ exports.fetchSpecificDateData = async (req, res) => {
 
     // satisfaction score
     const satisfactionScore = await db.query(
-      "SELECT (t.tickets_solved::float / NULLIF(t.tickets_handled, 0) * 100) AS satisfaction_score FROM thinkchat t JOIN users u ON t.user_id = u.user_id WHERE u.user_id = $1 AND t.submission_date = $2",
+      "SELECT ROUND(t.tickets_solved::float / NULLIF(t.tickets_handled, 0) * 100) AS satisfaction_score FROM thinkchat t JOIN users u ON t.user_id = u.user_id WHERE u.user_id = $1 AND t.submission_date = $2",
       [id, start_date]
     );
 
@@ -156,7 +156,7 @@ exports.fetchSpecificDateData = async (req, res) => {
 // };
 
 exports.fetchTotalData = async (req, res) => {
-  const token = req.header("token");
+  const token = req.header("auth-token");
   console.log(token);
   if (!token) {
     return res
@@ -183,7 +183,7 @@ exports.fetchTotalData = async (req, res) => {
 
     // satisfaction score
     const toatalsatisfactionScore = await db.query(
-      "SELECT (SUM(t.tickets_solved::float) / NULLIF(SUM(t.tickets_handled), 0) * 100) AS satisfaction_score FROM thinkchat t JOIN users u ON t.user_id = u.user_id WHERE u.user_id = $1 AND t.submission_date BETWEEN $2 AND $3",
+      "SELECT ROUND(SUM(t.tickets_solved::float) / NULLIF(SUM(t.tickets_handled), 0) * 100) AS satisfaction_score FROM thinkchat t JOIN users u ON t.user_id = u.user_id WHERE u.user_id = $1 AND t.submission_date BETWEEN $2 AND $3",
       [id, start_date, end_date]
     );
 

@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Box, Button, Grid, Container, Typography } from '@mui/material';
 // sections
+import { useNavigate } from 'react-router-dom';
 
 import { AppTasks, AppTime, PerformanceReport, InformationCard } from '../sections/@dashboard/app';
 import { fetchDataFromBackend } from '../_mock/fetchDataFromBackend';
-import BasicDatePicker from '../layouts/dashboard/header/Calendar';
+import BasicDatePicker from '../layouts/dashboard/dates/Calendar';
 
 // ----------------------------------------------------------------------
 
@@ -17,31 +18,56 @@ export default function DashboardAppPage() {
   const [satisfactionScore, setSatisfactionScore] = useState(0);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const handleUpdateValues = () => {};
+  const [date, setDate] = useState({ startDate: '', endDate: '' });
+  let navigate = useNavigate();
 
-  useEffect(() => {
-    // Function to fetch data from the backend
-    const fetchData = async () => {
-      try {
-        // Get the token from local storage (change this based on your token storage mechanism)
-        const token = localStorage.getItem('token');
-        if (!token) {
-          console.error('Token not found');
-          return;
-        }
+  const host = 'http://localhost:8000/api/get-users';
 
-        const data = await fetchDataFromBackend(token);
+  const handleUpdateValues = async (e) => {
+    e.preventDefault();
+    const response = await fetch(`${host}/1/${date.startDate}/${date.endDate}`, {
+      method: 'GET',
+      headers: {
+        'auth-token': localStorage.getItem('token'),
+        'Content-Type': 'application/json',
+      },
+    });
+    // console.log(localStorage.getItem('token'));
+    const json = await response.json();
+    console.log(json);
+  };
 
-        setGradingCount(data.gradingCountDaily.grading_count_daily);
-        setThinkchatCount(data.thinkchatCountDaily.tickets_solved);
-        setSatisfactionScore(data.satisfactionScoreDaily.satisfaction_score);
-      } catch (error) {
-        console.error('Error fetching data:', error);
+  useEffect(
+    () => {
+      if (localStorage.getItem('token')) {
+        const fetchData = async () => {
+          try {
+            const data = await fetchDataFromBackend();
+
+            setGradingCount(data.gradingCountDaily.grading_count_daily);
+            setThinkchatCount(data.thinkchatCountDaily.tickets_solved);
+            setSatisfactionScore(data.satisfactionScoreDaily.satisfaction_score);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        };
+
+        fetchData();
+      } else {
+        navigate('/');
       }
-    };
+    },
 
-    fetchData();
-  }, []);
+    // Function to fetch data from the backend
+    []
+  );
+  const onChange = (e) => {
+    setDate({ ...date, [e.target.name]: e.target.value });
+    console.log(date.startDate);
+    console.log(date.endDate);
+  };
+  // console.log(startDate);
+  // console.log(endDate);
 
   return (
     <>
@@ -52,11 +78,14 @@ export default function DashboardAppPage() {
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: 'inline-flex', gap: 2, mt: 2, mb: 2 }}>
-            <BasicDatePicker labeltext="start" value={startDate} onChange={(date) => setStartDate(date)} />
-            <BasicDatePicker labeltext="end" value={endDate} onChange={(date) => setEndDate(date)} />
-            <Button variant="contained" color="secondary" onClick={handleUpdateValues}>
-              Apply
-            </Button>
+            <form onSubmit={handleUpdateValues}>
+              <BasicDatePicker labeltext="start" value={date.startDate} name="startDate" onChange={onChange} />
+
+              <BasicDatePicker labeltext="end" value={date.endDate} name="endDate" onChange={onChange} />
+              <Button variant="contained" color="secondary">
+                Apply
+              </Button>
+            </form>
           </Box>
         </Grid>
 
