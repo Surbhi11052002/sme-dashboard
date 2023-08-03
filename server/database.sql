@@ -24,3 +24,8 @@ CREATE TABLE thinkchat (
   submission_date DATE NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
+
+ALTER TABLE users ADD role varchar(50) , ADD discipline varchar(50) ;
+UPDATE users SET role = 'Subject Matter Expert', discipline = 'Engineering' WHERE user_id = 1;
+
+ALTER TABLE users ALTER COLUMN role SET NOT NULL;

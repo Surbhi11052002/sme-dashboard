@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage';
 
 //
 import DashboardAppPage from './pages/DashboardAppPage';
+import RegisterPage from './pages/RegisterPage';
 
 // ----------------------------------------------------------------------
 
@@ -16,6 +17,10 @@ export default function Router() {
     {
       path: '/',
       element: <LoginPage />,
+    },
+    {
+      path: '/register',
+      element: <RegisterPage />,
     },
 
     {

@@ -16,27 +16,36 @@ export default function DashboardAppPage() {
   const [gradingCount, setGradingCount] = useState(0);
   const [thinkchatCount, setThinkchatCount] = useState(0);
   const [satisfactionScore, setSatisfactionScore] = useState(0);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  // const [startDate, setStartDate] = useState(null);
+  // const [endDate, setEndDate] = useState(null);
   const [date, setDate] = useState({ startDate: '', endDate: '' });
   let navigate = useNavigate();
 
-  const host = 'http://localhost:8000/api/get-users';
+  const host = 'http://localhost:8000/api/get-users/:id';
 
   const handleUpdateValues = async (e) => {
     e.preventDefault();
-    const response = await fetch(`${host}/1/${date.startDate}/${date.endDate}`, {
+    const response = await fetch(`${host}/${date.startDate}/${date.endDate}`, {
       method: 'GET',
       headers: {
         'auth-token': localStorage.getItem('token'),
         'Content-Type': 'application/json',
       },
     });
-    // console.log(localStorage.getItem('token'));
+
     const json = await response.json();
-    console.log(json);
+    const data = json.data;
+    console.log(data);
+    setGradingCount(data.totalGradingCount);
+    setThinkchatCount(data.totalthinkchatCount);
+    setSatisfactionScore(data.toatalsatisfactionScore);
   };
 
+  const onChange = (e) => {
+    setDate({ ...date, [e.target.name]: e.target.value });
+  };
+  console.log(date.startDate);
+  console.log(date.endDate);
   useEffect(
     () => {
       if (localStorage.getItem('token')) {
@@ -61,13 +70,6 @@ export default function DashboardAppPage() {
     // Function to fetch data from the backend
     []
   );
-  const onChange = (e) => {
-    setDate({ ...date, [e.target.name]: e.target.value });
-    console.log(date.startDate);
-    console.log(date.endDate);
-  };
-  // console.log(startDate);
-  // console.log(endDate);
 
   return (
     <>
@@ -77,16 +79,16 @@ export default function DashboardAppPage() {
             Hi, Welcome back
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: 'inline-flex', gap: 2, mt: 2, mb: 2 }}>
-            <form onSubmit={handleUpdateValues}>
-              <BasicDatePicker labeltext="start" value={date.startDate} name="startDate" onChange={onChange} />
+          <form onSubmit={handleUpdateValues}>
+            <Box sx={{ display: 'inline-flex', gap: 2, mt: 2, mb: 2 }}>
+              <input type="date" value={date.startDate} name="startDate" onChange={onChange} />
 
-              <BasicDatePicker labeltext="end" value={date.endDate} name="endDate" onChange={onChange} />
-              <Button variant="contained" color="secondary">
+              <input type="date" value={date.endDate} name="endDate" onChange={onChange} />
+              <Button variant="contained" color="secondary" type="submit">
                 Apply
               </Button>
-            </form>
-          </Box>
+            </Box>
+          </form>
         </Grid>
 
         <Grid container spacing={3}>

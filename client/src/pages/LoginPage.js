@@ -1,6 +1,7 @@
+import { Link } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
-import { Box, Link, Container, Typography, Divider, Stack, Button } from '@mui/material';
+import { Box, Container, Typography, Divider, Stack, Button } from '@mui/material';
 // hooks
 import useResponsive from '../hooks/useResponsive';
 // components
@@ -66,7 +67,9 @@ export default function LoginPage() {
 
             <Typography variant="body2" sx={{ mb: 5 }}>
               Don’t have an account? {''}
-              <Link variant="subtitle2">Get started</Link>
+              <Link to="/register" variant="subtitle2">
+                Get started
+              </Link>
             </Typography>
 
             <Stack direction="row" spacing={2}>
