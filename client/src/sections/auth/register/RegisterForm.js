@@ -1,55 +1,51 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Stack, TextField, IconButton, InputAdornment, MenuItem, Button } from '@mui/material';
+import { Stack, TextField, IconButton, InputAdornment, MenuItem } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 import Iconify from '../../../components/iconify';
 
 export const RegisterForm = () => {
-  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  let history = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
+    name: '',
     email: '',
     password: '',
+    cpassword: '',
     role: '',
     discipline: '',
   });
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const { username, email, password, role, discipline } = formData;
     const response = await fetch('http://localhost:8000/api/register', {
       method: 'POST',
-
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({
-        email: formData.email,
-        password: formData.password,
-        role: formData.role,
-        discipline: formData.discipline,
-        username: formData.username,
+        email,
+        password,
+        role,
+        discipline,
+        username,
       }),
     });
     const json = await response.json();
-    console.log(json);
     if (json.success) {
       //localStorage.setItem('token', json.token);
-      // alert('LoggedIn successfully');
-      navigate('/');
+      history('/');
     }
   };
-
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
     <>
       <Stack spacing={3} direction="column">
-        <TextField type="text" name="username" label="Username" value={formData.username} onChange={handleChange} />
+        <TextField name="username" label="Username" value={formData.username} onChange={handleChange} />
         <TextField name="role" select label="Role" value={formData.role} onChange={handleChange}>
           <MenuItem value="contentlead">Content Lead</MenuItem>
           <MenuItem value="sme">Subject Matter Expert</MenuItem>
@@ -58,7 +54,7 @@ export const RegisterForm = () => {
           <MenuItem value="design">Design</MenuItem>
           <MenuItem value="engineering">Engineering</MenuItem>
         </TextField>
-        <TextField type="email" name="email" label="Email" value={formData.email} onChange={handleChange} />
+        <TextField name="email" label="Email" value={formData.email} onChange={handleChange} />
         <TextField
           name="password"
           label="Password"

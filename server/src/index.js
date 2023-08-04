@@ -17,10 +17,12 @@ app.use(passport.initialize());
 //import routes
 const authRoutes = require("./routes/auth");
 const userData = require("./routes/showData");
+const viewprofile = require("./routes/viewProfile");
 
 //initilaize routes
 app.use("/api", authRoutes);
 app.use("/api", userData);
+app.use("/api", viewprofile);
 
 //app start
 const PORT = 8000;

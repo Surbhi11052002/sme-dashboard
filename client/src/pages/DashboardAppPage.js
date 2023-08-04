@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { AppTasks, AppTime, PerformanceReport, InformationCard } from '../sections/@dashboard/app';
 import { fetchDataFromBackend } from '../_mock/fetchDataFromBackend';
-import BasicDatePicker from '../layouts/dashboard/dates/Calendar';
 
 // ----------------------------------------------------------------------
 
@@ -16,8 +15,6 @@ export default function DashboardAppPage() {
   const [gradingCount, setGradingCount] = useState(0);
   const [thinkchatCount, setThinkchatCount] = useState(0);
   const [satisfactionScore, setSatisfactionScore] = useState(0);
-  // const [startDate, setStartDate] = useState(null);
-  // const [endDate, setEndDate] = useState(null);
   const [date, setDate] = useState({ startDate: '', endDate: '' });
   let navigate = useNavigate();
 
@@ -44,8 +41,7 @@ export default function DashboardAppPage() {
   const onChange = (e) => {
     setDate({ ...date, [e.target.name]: e.target.value });
   };
-  console.log(date.startDate);
-  console.log(date.endDate);
+
   useEffect(
     () => {
       if (localStorage.getItem('token')) {
