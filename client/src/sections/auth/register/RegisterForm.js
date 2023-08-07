@@ -24,13 +24,14 @@ export const RegisterForm = () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
+      mode: 'no-cors',
+      body: {
         email,
         password,
         role,
         discipline,
         username,
-      }),
+      },
     });
     const json = await response.json();
     if (json.success) {

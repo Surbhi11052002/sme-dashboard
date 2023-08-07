@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { AppTasks, AppTime, PerformanceReport, InformationCard } from '../sections/@dashboard/app';
 import { fetchDataFromBackend } from '../_mock/fetchDataFromBackend';
-
+import userAccount from '../profile/Profile';
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {

@@ -5,9 +5,10 @@ import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox } from '@m
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/iconify';
+import userAccount from '../../../profile/Profile';
 
 // ----------------------------------------------------------------------
-
+//const Role = userAccount.Role;
 export default function LoginForm() {
   const navigate = useNavigate();
 
@@ -34,7 +35,12 @@ export default function LoginForm() {
     if (json.success) {
       localStorage.setItem('token', json.token);
       // alert('LoggedIn successfully');
-      navigate('/dashboard');
+      navigate('/dashboard/app');
+      // if (Role === 'Content Lead') {
+      //   navigate('/dashboard/user');
+      // } else if (Role === 'Subject Matter Expert') {
+      //   navigate('/dashboard/app');
+      // }
     } else {
       alert('Invalid Credentials');
     }

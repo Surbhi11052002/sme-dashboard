@@ -18,6 +18,7 @@ import {
   IconButton,
   TableContainer,
   TablePagination,
+  Button,
 } from '@mui/material';
 // components
 import Label from '../components/label';
@@ -27,15 +28,15 @@ import Scrollbar from '../components/scrollbar';
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
 import USERLIST from '../_mock/user';
+import BasicModal from './BasicModal';
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Name', alignRight: false },
-  { id: 'company', label: 'Company', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'isVerified', label: 'Verified', alignRight: false },
+  { id: 'discipline', label: 'Discipline', alignRight: false },
   { id: 'status', label: 'Status', alignRight: false },
+  { id: 'review', label: 'Send Review', alignRight: false },
   { id: '' },
 ];
 
@@ -82,10 +83,6 @@ export default function UserPage() {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const handleOpenMenu = (event) => {
-    setOpen(event.currentTarget);
-  };
-
   const handleCloseMenu = () => {
     setOpen(null);
   };
@@ -110,6 +107,8 @@ export default function UserPage() {
 
   const isNotFound = !filteredUsers.length && !!filterName;
 
+  const onClick = () => {};
+
   return (
     <>
       <Container>
@@ -128,7 +127,7 @@ export default function UserPage() {
                 <UserListHead headLabel={TABLE_HEAD} />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                    const { id, name, role, status, company, avatarUrl, isVerified } = row;
+                    const { id, name, status, avatarUrl, discipline, review } = row;
 
                     return (
                       <TableRow hover key={id}>
@@ -141,20 +140,25 @@ export default function UserPage() {
                           </Stack>
                         </TableCell>
 
-                        <TableCell align="left">{company}</TableCell>
+                        {/* {/* <TableCell align="left">{company}</TableCell> */}
 
-                        <TableCell align="left">{role}</TableCell>
-
-                        <TableCell align="left">{isVerified ? 'Yes' : 'No'}</TableCell>
+                        <TableCell align="left">{discipline}</TableCell>
 
                         <TableCell align="left">
                           <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
                         </TableCell>
+                        <TableCell align="left">
+                          {review}
+                          {/* <Button variant="contained" color="error" onClick={onClick}>
+                            Review
+                          </Button> */}
+                          <BasicModal />
+                        </TableCell>
 
                         <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                            <Iconify icon={'eva:more-vertical-fill'} />
-                          </IconButton>
+                          <Button variant="contained" onClick={onClick}>
+                            Go to SME Dashboard
+                          </Button>
                         </TableCell>
                       </TableRow>
                     );
