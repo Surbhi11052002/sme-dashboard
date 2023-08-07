@@ -5,6 +5,7 @@ import DashboardLayout from './layouts/dashboard';
 //
 
 import LoginPage from './pages/LoginPage';
+import UserPage from './pages/UserPage';
 
 //
 import DashboardAppPage from './pages/DashboardAppPage';
@@ -21,6 +22,14 @@ export default function Router() {
     {
       path: '/register',
       element: <RegisterPage />,
+    },
+    {
+      path: '/dashboard',
+      element: <DashboardLayout />,
+      children: [
+        { element: <Navigate to="/dashboard/user" />, index: true },
+        { path: 'user', element: <UserPage /> },
+      ],
     },
 
     {

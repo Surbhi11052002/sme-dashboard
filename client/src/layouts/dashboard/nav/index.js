@@ -6,6 +6,7 @@ import { styled } from '@mui/material/styles';
 import { Box, Link, Drawer, Typography, Avatar } from '@mui/material';
 // mock
 import account from '../../../_mock/account';
+import userAccount from '../../../profile/Profile';
 // hooks
 import useResponsive from '../../../hooks/useResponsive';
 // components
@@ -63,17 +64,17 @@ export default function Nav({ openNav, onCloseNav }) {
 
             <Box sx={{ mt: 2 }} textAlign="center">
               <Typography variant="h3" sx={{ color: 'white' }}>
-                {account.displayName}
+                {userAccount.Username}
               </Typography>
               <Typography variant="body1" sx={{ color: 'white' }}>
-                {account.email}
+                {userAccount.Email}
               </Typography>
 
               <Typography variant="h6" sx={{ color: 'text.primary', mt: 7 }}>
-                {`Subject Matter Expert`}
+                {userAccount.Role}
               </Typography>
               <Typography variant="h6" sx={{ color: 'text.secondary', mt: 1 }}>
-                {account.subject}
+                {userAccount.Discipline}
               </Typography>
             </Box>
           </StyledAccount>

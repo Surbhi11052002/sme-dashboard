@@ -35,3 +35,4 @@ async function fetchUserProfile() {
 fetchUserProfile();
 
 console.log(userAccount.Email);
+export default userAccount;
