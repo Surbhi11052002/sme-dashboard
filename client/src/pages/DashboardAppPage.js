@@ -5,13 +5,16 @@ import { Box, Button, Grid, Container, Typography } from '@mui/material';
 // sections
 import { useNavigate } from 'react-router-dom';
 
-import { AppTasks, AppTime, PerformanceReport, InformationCard } from '../sections/@dashboard/app';
+import { InformationCard } from '../sections/@dashboard/app';
 import { fetchDataFromBackend } from '../_mock/fetchDataFromBackend';
-import userAccount from '../profile/Profile';
+import { ReviewCard } from '../sections/@dashboard/app/ReviewCard';
 // ----------------------------------------------------------------------
 
+const review =
+  'The user interface is intuitive and easy to navigate. I had a great user experience.The user interface is intuitive and easy to navigate. I had a great user experience.';
+
 export default function DashboardAppPage() {
-  const theme = useTheme();
+  //const theme = useTheme();
   const [gradingCount, setGradingCount] = useState(0);
   const [thinkchatCount, setThinkchatCount] = useState(0);
   const [satisfactionScore, setSatisfactionScore] = useState(0);
@@ -100,7 +103,11 @@ export default function DashboardAppPage() {
             <InformationCard title="Satisfaction score" total={satisfactionScore} text="%" color="info" />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={8}>
+          <Grid item xs={12} md={10} lg={12}>
+            <ReviewCard review={review} />
+          </Grid>
+
+          {/* <Grid item xs={12} md={6} lg={8}>
             <PerformanceReport
               title="Performance Report"
               chartLabels={[
@@ -125,9 +132,9 @@ export default function DashboardAppPage() {
                 },
               ]}
             />
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12} md={6} lg={4}>
+          {/* <Grid item xs={12} md={6} lg={4}>
             <AppTime
               title="Projected Time: 8 hrs"
               chartData={[
@@ -136,9 +143,9 @@ export default function DashboardAppPage() {
               ]}
               chartColors={[theme.palette.secondary.main, theme.palette.info.main]}
             />
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12} md={6} lg={8}>
+          {/* <Grid item xs={12} md={6} lg={8}>
             <AppTasks
               title="Tasks"
               list={[
@@ -149,7 +156,7 @@ export default function DashboardAppPage() {
                 { id: '5', label: 'Sprint Showcase' },
               ]}
             />
-          </Grid>
+          </Grid> */}
         </Grid>
       </Container>
     </>
