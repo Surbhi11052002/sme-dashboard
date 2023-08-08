@@ -18,20 +18,14 @@ export const RegisterForm = () => {
   });
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { username, email, password, role, discipline } = formData;
+
     const response = await fetch('http://localhost:8000/api/register', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      mode: 'no-cors',
-      body: {
-        email,
-        password,
-        role,
-        discipline,
-        username,
-      },
+      // mode: 'no-cors',
+      body: JSON.stringify(formData),
     });
     const json = await response.json();
     if (json.success) {
