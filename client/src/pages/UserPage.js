@@ -1,6 +1,6 @@
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 // @mui
 import {
   Card,
@@ -27,7 +27,7 @@ import Scrollbar from '../components/scrollbar';
 // sections
 import { UserListHead, UserListToolbar } from '../sections/@dashboard/user';
 // mock
-import USERLIST from '../_mock/user';
+
 import BasicModal from './BasicModal';
 
 // ----------------------------------------------------------------------
@@ -72,6 +72,29 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function UserPage() {
+  const [USERLIST, setUSERLIST] = useState([]);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch('http://localhost:8000/api/get-users');
+        const json = await response.json();
+        const fetchedUsers = json.users;
+        const processedUsers = fetchedUsers.map((user, index) => ({
+          id: user.user_id,
+          avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
+          name: user.username,
+          status: 'active',
+          discipline: user.discipline,
+        }));
+        setUSERLIST(processedUsers);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+    fetchData();
+  }, []);
+
+  //--------------------------------------------------------------------------------------
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);

@@ -22,15 +22,20 @@ export const RegisterForm = () => {
     const response = await fetch('http://localhost:8000/api/register', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       // mode: 'no-cors',
       body: JSON.stringify(formData),
     });
     const json = await response.json();
+    console.log(json);
     if (json.success) {
-      //localStorage.setItem('token', json.token);
-      history('/');
+      localStorage.setItem('token', json.token);
+      if (json.role === 'contentlead') {
+        history('/dashboard/user');
+      } else {
+        history('/dashboard/app');
+      }
     }
   };
   const handleChange = (e) => {
