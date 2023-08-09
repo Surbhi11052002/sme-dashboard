@@ -35,12 +35,12 @@ export default function LoginForm() {
     if (json.success) {
       localStorage.setItem('token', json.token);
       // alert('LoggedIn successfully');
-      navigate('/dashboard/app');
-      // if (Role === 'Content Lead') {
-      //   navigate('/dashboard/user');
-      // } else if (Role === 'Subject Matter Expert') {
-      //   navigate('/dashboard/app');
-      // }
+      //navigate('/dashboard/app');
+      if (json.role === 'Content Lead') {
+        navigate('/dashboard/user');
+      } else {
+        navigate('/dashboard/app');
+      }
     } else {
       alert('Invalid Credentials');
     }
@@ -74,7 +74,6 @@ export default function LoginForm() {
       </Stack>
 
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-        <Checkbox name="remember" label="Remember me" />
         <Link variant="subtitle2" underline="hover">
           Forgot password?
         </Link>

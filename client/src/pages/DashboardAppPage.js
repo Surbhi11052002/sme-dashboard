@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 // @mui
-import { useTheme } from '@mui/material/styles';
+
 import { Box, Button, Grid, Container, Typography } from '@mui/material';
 // sections
 import { useNavigate } from 'react-router-dom';
@@ -10,16 +10,43 @@ import { fetchDataFromBackend } from '../_mock/fetchDataFromBackend';
 import { ReviewCard } from '../sections/@dashboard/app/ReviewCard';
 // ----------------------------------------------------------------------
 
-const review =
-  'The user interface is intuitive and easy to navigate. I had a great user experience.The user interface is intuitive and easy to navigate. I had a great user experience.';
+// const review =
+//   'The user interface is intuitive and easy to navigate. I had a great user experience.The user interface is intuitive and easy to navigate. I had a great user experience.';
 
 export default function DashboardAppPage() {
-  //const theme = useTheme();
   const [gradingCount, setGradingCount] = useState(0);
   const [thinkchatCount, setThinkchatCount] = useState(0);
   const [satisfactionScore, setSatisfactionScore] = useState(0);
   const [date, setDate] = useState({ startDate: '', endDate: '' });
+  const [review, setReview] = useState('');
   let navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchReview() {
+      try {
+        const token = localStorage.getItem('token');
+
+        const response = await fetch('http://localhost:8000/api/show-review', {
+          method: 'GET',
+          headers: {
+            token,
+            'Content-Type': 'application/json',
+          },
+        });
+        const data = await response.json();
+        console.log(data);
+        if (data.success) {
+          //console.log(data);
+          setReview(data.data[0].reviews); // Update the review state with the fetched review
+        } else {
+          console.error('Failed to fetch review.');
+        }
+      } catch (error) {
+        console.error('Error fetching review:', error);
+      }
+    }
+    fetchReview();
+  }, []);
 
   const host = 'http://localhost:8000/api/get-users/:id';
 
@@ -55,6 +82,8 @@ export default function DashboardAppPage() {
             setGradingCount(data.gradingCountDaily.grading_count_daily);
             setThinkchatCount(data.thinkchatCountDaily.tickets_solved);
             setSatisfactionScore(data.satisfactionScoreDaily.satisfaction_score);
+
+            //fetchReview();
           } catch (error) {
             console.error('Error fetching data:', error);
           }
@@ -106,57 +135,6 @@ export default function DashboardAppPage() {
           <Grid item xs={12} md={10} lg={12}>
             <ReviewCard review={review} />
           </Grid>
-
-          {/* <Grid item xs={12} md={6} lg={8}>
-            <PerformanceReport
-              title="Performance Report"
-              chartLabels={[
-                '01/01/2003',
-                '02/01/2003',
-                '03/01/2003',
-                '04/01/2003',
-                '05/01/2003',
-                '06/01/2003',
-                '07/01/2003',
-                '08/01/2003',
-                '09/01/2003',
-                '10/01/2003',
-                '11/01/2003',
-              ]}
-              chartData={[
-                {
-                  name: 'Team A',
-                  type: 'column',
-                  fill: 'solid',
-                  data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
-                },
-              ]}
-            />
-          </Grid> */}
-
-          {/* <Grid item xs={12} md={6} lg={4}>
-            <AppTime
-              title="Projected Time: 8 hrs"
-              chartData={[
-                { label: 'Time Spent', value: 5.5 },
-                { label: 'Time Left', value: 2.5 },
-              ]}
-              chartColors={[theme.palette.secondary.main, theme.palette.info.main]}
-            />
-          </Grid> */}
-
-          {/* <Grid item xs={12} md={6} lg={8}>
-            <AppTasks
-              title="Tasks"
-              list={[
-                { id: '1', label: 'Create FireStone Logo' },
-                { id: '2', label: 'Add SCSS and JS files if required' },
-                { id: '3', label: 'Stakeholder Meeting' },
-                { id: '4', label: 'Scoping & Estimations' },
-                { id: '5', label: 'Sprint Showcase' },
-              ]}
-            />
-          </Grid> */}
         </Grid>
       </Container>
     </>

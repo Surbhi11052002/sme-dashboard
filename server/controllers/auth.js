@@ -45,6 +45,7 @@ exports.login = async (req, res) => {
   let payload = {
     id: user.user_id,
     email: user.email,
+    role: user.role,
   };
 
   try {
@@ -55,6 +56,7 @@ exports.login = async (req, res) => {
       message: "Logged in succefully",
       token: token,
       id: payload.id,
+      role: payload.role,
     });
   } catch (error) {
     console.log(error.message);
